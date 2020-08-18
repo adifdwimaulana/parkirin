@@ -23,7 +23,7 @@ class HomeScreen extends React.Component {
 class ParkScreen extends React.Component {
     render() {
         return (
-            <View>
+            <View style={styles.container}>
                 <Park />
             </View>
         )
@@ -86,3 +86,13 @@ const TabNvigator = createMaterialBottomTabNavigator({
     })
 
 export default createAppContainer(TabNvigator)
+
+const styles = StyleSheet.create({
+    container: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+    }
+});

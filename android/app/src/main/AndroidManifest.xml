@@ -2,6 +2,8 @@
   package="com.parkirin">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
       android:name=".MainApplication"
@@ -22,6 +24,9 @@
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+      <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyDf8UOiJrm6eJVdZ3ZMJdKqczzrcC9jqms"/>
     </application>
 
 </manifest>

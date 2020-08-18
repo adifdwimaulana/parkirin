@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView, Alert } from 'react-native';
-import { auth, fs } from '../config';
+import { auth, fs, db } from '../config';
 import firebase from 'firebase';
 
 import Button from '../components/Button';
@@ -24,17 +24,16 @@ export default class Register extends React.Component {
     handleSignUp = () => {
         const { email, password, name, phone } = this.state
 
-
         auth
             .createUserWithEmailAndPassword(email, password)
             .then(() => {
                 console.log(auth.currentUser.uid)
-                fs.collection('users').doc(auth.currentUser.uid).set({
+                db.ref(`/users/${auth.currentUser.uid}`).update({
                     name,
                     email,
                     password,
                     phone
-                })
+                }).then(() => console.log("Push Data Berhasil"))
                 Alert.alert("Registrasi Berhasil")
                 this.props.navigation.navigate('Login')
             })
