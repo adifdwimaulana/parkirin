@@ -6,6 +6,7 @@ import Login from './src/screens/Login';
 import Register from './src/screens/Register';
 import Splash from './src/screens/Splash';
 import Home from './src/screens/Home';
+import Route from './src/routes';
 
 
 console.disableYellowBox = true;
@@ -17,6 +18,7 @@ const Stack = createStackNavigator({
 
 const Switch = createSwitchNavigator({
   Home,
+  Route,
   Splash,
   Stack,
 },

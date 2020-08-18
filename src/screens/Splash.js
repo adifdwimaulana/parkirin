@@ -6,7 +6,7 @@ import firebase from 'firebase';
 export default class Splash extends React.Component {
     componentDidMount() {
         auth.onAuthStateChanged(user => {
-            this.props.navigation.navigate(user ? "Home" : "Login")
+            this.props.navigation.navigate(user ? "Route" : "Login")
         })
     }
 

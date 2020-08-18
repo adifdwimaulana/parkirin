@@ -21,12 +21,13 @@ export default class Login extends React.Component {
 
         auth
             .signInWithEmailAndPassword(email, password)
-            .then(() => this.props.navigation.navigate('Home'))
+            .then(() => this.props.navigation.navigate('Route'))
             .catch(error => this.setState({ errorMessage: error.message }))
 
     }
 
     render() {
+        const { email, password } = this.state;
         return (
             <View style={styles.container}>
                 <Image
@@ -44,6 +45,8 @@ export default class Login extends React.Component {
                         style={styles.textInput}
                         autoCapitalize="none"
                         placeholder="Email"
+                        onChangeText={email => this.setState({ email })}
+                        value={email}
                     />
                     <Text style={styles.inputTitle}>Password</Text>
                     <TextInput
@@ -51,6 +54,8 @@ export default class Login extends React.Component {
                         style={styles.textInput}
                         autoCapitalize="none"
                         placeholder="Password"
+                        onChangeText={password => this.setState({ password })}
+                        value={password}
                     />
                     <Button
                         buttonSyle={styles.loginBtn}
