@@ -16,13 +16,12 @@ export default class Register extends React.Component {
             phone: '',
             errorMessage: null
         }
-
     }
 
     static navigationOptions = { header: null }
 
     handleSignUp = () => {
-        const { email, password, name, phone } = this.state
+        const { email, password, name, phone } = this.state;
 
         auth
             .createUserWithEmailAndPassword(email, password)
