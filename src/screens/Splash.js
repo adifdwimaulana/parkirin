@@ -21,7 +21,8 @@ export default class Splash extends React.Component {
                     source={require('../assets/car-solid.png')}
                     style={styles.icon}
                 />
-                <Text style={styles.title}>Parkirin</Text>
+                <Text style={styles.title}>SPARK</Text>
+                <Text style={styles.title}>Smart Park Recommender</Text>
                 <Image
                     source={require('../assets/bot-circle.png')}
                     style={styles.botCircle}

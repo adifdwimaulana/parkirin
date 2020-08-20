@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, ScrollView, Text, StyleSheet } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Dimensions } from 'react-native';
 import Button from '../components/Button';
-
+import SlidingPanel from 'react-native-sliding-up-down-panels';
 
 import { auth, db } from '../config';
 
+
+const { width, height } = Dimensions.get('window');
 
 export default class Profile extends React.Component {
     constructor(props) {
@@ -45,7 +47,6 @@ export default class Profile extends React.Component {
                     buttonSyle={styles.loginBtn}
                     text="Logout"
                 />
-
             </View>
         )
     }

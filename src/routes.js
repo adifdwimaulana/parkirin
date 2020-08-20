@@ -20,16 +20,6 @@ class HomeScreen extends React.Component {
     }
 }
 
-class ParkScreen extends React.Component {
-    render() {
-        return (
-            <View style={styles.container}>
-                <Park />
-            </View>
-        )
-    }
-}
-
 class ProfileScreen extends React.Component {
     render() {
         return (
@@ -51,19 +41,6 @@ const TabNvigator = createMaterialBottomTabNavigator({
             )
         }
     },
-    Park: {
-        screen: ParkScreen,
-        navigationOptions: {
-            tabBarIcon: ({ tintColor }) => (
-                <View>
-                    <Icon style={[{ color: tintColor }]} size={25} name={'map-marker'} />
-                </View>
-            ),
-            activeColor: '#ffffff',
-            inactiveColor: '#ebaabd',
-            barStyle: { backgroundColor: '#d13560' },
-        }
-    },
     Profile: {
         screen: ProfileScreen,
         navigationOptions: {
@@ -73,16 +50,16 @@ const TabNvigator = createMaterialBottomTabNavigator({
                 </View>
             ),
             activeColor: '#ffffff',
-            inactiveColor: '#92c5c2',
-            barStyle: { backgroundColor: '#2c6d6a' },
+            inactiveColor: '#ebaabd',
+            barStyle: { backgroundColor: '#d13560' },
         }
     },
 },
     {
         initialRouteName: 'Home',
         activeColor: '#ffffff',
-        inactiveColor: '#bda1f7',
-        barStyle: { backgroundColor: '#6948f4' },
+        inactiveColor: '#ebaabd',
+        barStyle: { backgroundColor: '#d13560' },
     })
 
 export default createAppContainer(TabNvigator)
