@@ -1,8 +1,35 @@
 import React from 'react';
-import { View, Button, ScrollView, Text, StyleSheet, Platform, PermissionsAndroid } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Platform, PermissionsAndroid } from 'react-native';
 import MapView from 'react-native-maps';
+import SearchableDropdown from 'react-native-searchable-dropdown';
 import Geolocation from 'react-native-geolocation-service';
 
+const locations = [
+    { id: 1, name: 'Dharmahusada' },
+    { id: 2, name: 'Kenjeran' },
+    { id: 3, name: 'Keputih' },
+    { id: 4, name: 'Klampis' },
+    { id: 5, name: 'Manyar' },
+    { id: 6, name: 'Mulyosari' },
+    { id: 7, name: 'Ngagel' },
+    { id: 8, name: 'Rungkut' },
+    { id: 9, name: 'Semampir' },
+    { id: 10, name: 'Sutorejo' },
+]
+
+if (Platform.OS === 'ios') {
+    Geolocation.requestAuthorization();
+    Geolocation.setRNConfiguration({
+        skipPermissionRequests: false,
+        authorizationLevel: 'whenInUse',
+    });
+}
+
+if (Platform.OS === 'android') {
+    PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+}
 
 export default class Park extends React.Component {
     constructor(props) {
@@ -14,6 +41,7 @@ export default class Park extends React.Component {
             region: null,
             showDestination: false,
             showDirection: false,
+            lokasi: ''
         };
     }
 
@@ -21,7 +49,6 @@ export default class Park extends React.Component {
         Geolocation.watchPosition(
             (position) => {
                 console.log(position);
-
                 this.setState({ origin: position.coords })
             },
             (error) => {
@@ -39,29 +66,58 @@ export default class Park extends React.Component {
     }
 
 
+
     render() {
         const { region, origin, destination, showDestination, showDirection } = this.state;
+        if (region == null) {
+            return null;
+        }
         return (
-            <View style={styles.container}>
+            <>
                 {/* <MapView
                     style={{ flex: 1, ...StyleSheet.absoluteFillObject }}
-                    region={region}
+                    region={{
+                        latitude: 37.78825,
+                        longitude: -122.4324,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                    }}
                 /> */}
-                <Button title='Show panel' onPress={() => this._panel.show()} />
-            </View>
+                <Text>{origin.latitude}</Text>
+                <Text>{origin.longitude}</Text>
+                <SearchableDropdown
+                    onTextChange={text => console.log(text)}
+                    onItemSelect={item => this.handleLokasi(item)}
+                    textInputStyle={{
+                        borderBottomColor: "#000",
+                        borderBottomWidth: StyleSheet.hairlineWidth,
+                        fontSize: 16,
+                        paddingLeft: 16,
+                        backgroundColor: '#fff',
+                    }}
+                    itemStyle={styles.itemStyle}
+                    itemTextStyle={{
+                        color: '#222',
+                    }}
+                    items={locations}
+                    defaultIndex={0}
+                    placeholder="Masukkan Lokasi"
+                    resetValue={false}
+                    underlineColorAndroid="transparent"
+                />
+            </>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    panel: {
-        height: 400,
-        backgroundColor: '#efefef'
+    itemStyle: {
+        paddingVertical: 10,
+        paddingHorizontal: 16,
+        marginTop: 0,
+        backgroundColor: '#FAF9F8',
+        borderColor: '#bbb',
+        borderBottomColor: "#000",
+        borderBottomWidth: StyleSheet.hairlineWidth,
     }
 })

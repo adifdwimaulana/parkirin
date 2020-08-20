@@ -1,13 +1,20 @@
 import React from 'react';
-import { Text, TouchableOpacity, StyleSheet, ScrollView, View, Image, Dimensions } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, ScrollView, View, Image, Dimensions, SafeAreaView } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
+import MapViewDirections from 'react-native-maps-directions';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 
-import { auth } from '../config';
+import { auth, db } from '../config';
 
 const { width, height } = Dimensions.get('window');
 
+const home = {
+    latitude: -7.289144,
+    longitude: 112.812393,
+    latitudeDelta: 0.045,
+    longitudeDelta: 0.045
+}
 const locations = [
     { id: 1, name: 'Dharmahusada' },
     { id: 2, name: 'Kenjeran' },
@@ -15,11 +22,9 @@ const locations = [
     { id: 4, name: 'Klampis' },
     { id: 5, name: 'Manyar' },
     { id: 6, name: 'Mulyosari' },
-    { id: 7, name: 'Ngagel' },
-    { id: 8, name: 'Rungkut' },
-    { id: 9, name: 'Semampir' },
-    { id: 10, name: 'Sutorejo' },
 ]
+
+const API_KEY = 'AIzaSyDf8UOiJrm6eJVdZ3ZMJdKqczzrcC9jqms'
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -27,12 +32,11 @@ export default class Home extends React.Component {
 
         Geolocation.watchPosition(
             (position) => {
-
                 const myLocation = {
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421
+                    latitudeDelta: 0.008,
+                    longitudeDelta: 0.008
                 }
                 this.setState({ origin: myLocation })
             },
@@ -47,25 +51,52 @@ export default class Home extends React.Component {
         this.state = {
             destination: null,
             origin: null,
+            parks: []
         }
     }
 
     componentDidMount() {
     }
 
+    handleLokasi(item) {
+        console.log(item.name)
+        db.ref(`/${item.name}`).once('value', (snap) => {
+            const coordinate = snap.val();
+            this.setState({ destination: coordinate })
+            console.log(coordinate)
+        })
+
+        db.ref(`/${item.name}/Parkir`).once('value', (snap) => {
+            let parkArr = []
+            const data = snap.val();
+
+            data.forEach(item => {
+                console.log(item)
+                parkArr.push(item)
+            });
+            this.setState({ parks: parkArr })
+        })
+    }
+
+    handlePickPark(item) {
+        console.log(item)
+    }
+
     render() {
-        const { origin, destination } = this.state;
+        const { origin, destination, parks } = this.state;
         if (origin == null) {
             return null;
         }
         return (
-            <View style={styles.container}>
+            <View
+                style={styles.container}
+            >
                 <MapView
                     style={{ flex: 1, ...StyleSheet.absoluteFillObject }}
-                    region={origin}
+                    region={home}
                 >
                     <Marker
-                        coordinate={origin}
+                        coordinate={home}
                         title={"You"}
                         description={"Your Current Location"}
                     >
@@ -74,6 +105,53 @@ export default class Home extends React.Component {
                             style={{ height: 25, width: 25 }}
                         />
                     </Marker>
+                    {
+                        destination ?
+                            <Marker
+                                coordinate={destination}
+                                title={"Your Destination"}
+                                onPress={() => console.log("Clicked")}
+                            >
+
+                            </Marker> : null
+                    }
+                    {
+                        destination ?
+                            <MapViewDirections
+                                origin={home}
+                                destination={destination}
+                                apikey={API_KEY}
+                                strokeWidth={5}
+                                strokeColor="hotpink"
+                            /> : null
+                    }
+                    {
+                        parks ?
+                            parks.map((item) =>
+                                <Marker
+                                    coordinate={{
+                                        latitude: item.latitude,
+                                        longitude: item.longitude
+                                    }}
+                                    title={`${item.name}`}
+                                    onPress={() => {
+                                        const lat = item.latitude;
+                                        const long = item.longitude;
+                                        const coordinate = {
+                                            latitude: lat,
+                                            longitude: long
+                                        }
+                                        this.setState({ destination: coordinate })
+                                        console.log(coordinate)
+                                    }}
+                                >
+                                    <Image
+                                        source={require('../assets/parking-icon.png')}
+                                        style={{ height: 40, width: 40 }}
+                                    />
+                                </Marker>
+                            ) : null
+                    }
                 </MapView>
                 <SearchableDropdown
                     onTextChange={text => console.log(text)}

@@ -13,9 +13,9 @@ import Profile from './screens/Profile';
 class HomeScreen extends React.Component {
     render() {
         return (
-            <ScrollView>
+            <View>
                 <Home />
-            </ScrollView>
+            </View>
         )
     }
 }
