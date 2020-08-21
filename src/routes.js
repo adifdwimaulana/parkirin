@@ -6,15 +6,15 @@ import { createMaterialBottomTabNavigator } from 'react-navigation-material-bott
 
 
 import Home from './screens/Home';
-import Park from './screens/Park';
 import Profile from './screens/Profile';
+import HomeRoute from './homeRoutes';
 
 
 class HomeScreen extends React.Component {
     render() {
         return (
             <View>
-                <Home />
+                <HomeRoute />
             </View>
         )
     }

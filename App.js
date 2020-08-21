@@ -7,6 +7,8 @@ import Register from './src/screens/Register';
 import Splash from './src/screens/Splash';
 import Home from './src/screens/Home';
 import Route from './src/routes';
+import HomeRoute from './src/homeRoutes';
+import Payment from './src/screens/Payment';
 import SlidingPanel from 'react-native-sliding-up-down-panels';
 
 
@@ -32,7 +34,6 @@ const Stack = createStackNavigator({
 })
 
 const Switch = createSwitchNavigator({
-  Home,
   Route,
   Splash,
   Stack,

@@ -6,8 +6,9 @@ import MapViewDirections from 'react-native-maps-directions';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-
 import { auth, db } from '../config';
+
+import Payment from './Payment';
 
 const { width, height } = Dimensions.get('window');
 
@@ -27,13 +28,6 @@ const locations = [
 ]
 
 const API_KEY = 'AIzaSyDf8UOiJrm6eJVdZ3ZMJdKqczzrcC9jqms';
-
-const parkiranInfo = [
-    {
-        id: 1,
-        imageUrl: '../assets'
-    }
-]
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -60,11 +54,29 @@ export default class Home extends React.Component {
         this.state = {
             destination: null,
             origin: null,
-            parks: []
+            parks: [],
+            isSelect: false
         }
     }
 
     componentDidMount() {
+        Geolocation.getCurrentPosition(
+            (position) => {
+                const myLocation = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    latitudeDelta: 0.045,
+                    longitudeDelta: 0.045
+                }
+                this.setState({ origin: myLocation })
+            },
+            (error) => {
+                console.log(error.code, error.message)
+            },
+            {
+                enableHighAccuracy: true, timeout: 20000, maximumAge: 2000
+            }
+        )
     }
 
     handleLokasi(item) {
@@ -87,12 +99,18 @@ export default class Home extends React.Component {
         })
     }
 
-    handlePickPark(item) {
-        console.log(item)
+    handleFinish(item) {
+        console.log("Item = ", item)
+        db.ref('/current').set({
+            item
+        }).then(() => {
+            this.setState({ destination: null, parks: [], isSelect: false })
+            this.props.navigation.navigate('Payment')
+        })
     }
 
     render() {
-        const { origin, destination, parks } = this.state;
+        const { origin, destination, parks, isSelect } = this.state;
         if (origin == null) {
             return null;
         }
@@ -190,7 +208,7 @@ export default class Home extends React.Component {
                     />
 
                     <ScrollView
-                        style={{ height: height * 0.2, position: 'absolute', marginTop: height * 0.68, marginHorizontal: 20 }}
+                        style={{ height: height * 0.2, position: 'absolute', marginTop: height * 0.675, marginHorizontal: 20 }}
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}
                     >
@@ -216,21 +234,34 @@ export default class Home extends React.Component {
                                             <Text style={styles.empty}>Tersedia : {item.empty}</Text>
                                             <Text style={styles.cost}>Tarif : {item.cost}</Text>
                                         </View>
-                                        <TouchableOpacity
-                                            style={styles.btnDestination}
-                                            onPress={() => {
-                                                const lat = item.latitude;
-                                                const long = item.longitude;
-                                                const coordinate = {
-                                                    latitude: lat,
-                                                    longitude: long
-                                                }
-                                                this.setState({ destination: coordinate })
-                                                console.log(coordinate)
-                                            }}
-                                        >
-                                            <Icon style={[{ color: '#725E5E' }]} size={18} name={'arrow-right'} />
-                                        </TouchableOpacity>
+                                        <View style={styles.itemContainer}>
+                                            <TouchableOpacity
+                                                style={styles.btnDestination}
+                                                onPress={() => {
+                                                    const lat = item.latitude;
+                                                    const long = item.longitude;
+                                                    const coordinate = {
+                                                        latitude: lat,
+                                                        longitude: long
+                                                    }
+                                                    let arr = [];
+                                                    arr.push(item)
+                                                    console.log(arr)
+                                                    this.setState({ destination: coordinate, parks: arr, isSelect: true })
+                                                }}
+                                            >
+                                                <Icon style={[{ color: '#725E5E' }]} size={18} name={'arrow-right'} />
+                                            </TouchableOpacity>
+                                            {
+                                                isSelect ?
+                                                    <TouchableOpacity
+                                                        style={styles.btnFinish}
+                                                        onPress={() => { this.handleFinish(item) }}
+                                                    >
+                                                        <Icon style={[{ color: '#725E5E' }]} size={18} name={'check'} />
+                                                    </TouchableOpacity> : null
+                                            }
+                                        </View>
                                     </View>
                                 ) : null
                         }
@@ -298,11 +329,9 @@ const styles = StyleSheet.create({
         color: '#725E5E'
     },
     btnDestination: {
-        marginHorizontal: 8,
-        marginTop: 2,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-end'
+        color: '#725E5E',
+    },
+    btnFinish: {
+        color: '#725E5E',
     },
 })
