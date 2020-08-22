@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TouchableOpacity, StyleSheet, ScrollView, View, Image, Dimensions, SafeAreaView } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, ScrollView, View, Image, Dimensions, SafeAreaView, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import MapViewDirections from 'react-native-maps-directions';
@@ -18,6 +18,7 @@ const home = {
     latitudeDelta: 0.045,
     longitudeDelta: 0.045
 }
+
 const locations = [
     { id: 1, name: 'Dharmahusada' },
     { id: 2, name: 'Kenjeran' },
@@ -28,6 +29,30 @@ const locations = [
 ]
 
 const API_KEY = 'AIzaSyDf8UOiJrm6eJVdZ3ZMJdKqczzrcC9jqms';
+
+const dayArray = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+const monthArray = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "Nopember", "Desember"]
+let matkulOneArr = [];
+let matkulTwoArr = [];
+
+let day = new Date().getDay();
+let date = new Date().getDate();
+let month = new Date().getMonth();
+month = monthArray[month]
+const year = new Date().getFullYear();
+console.log(month)
+
+if (date < 10) {
+    date = '0' + date;
+}
+
+if (month < 10) {
+    month = '0' + month;
+}
+
+let currentDay = dayArray[day];
+let today = date + ' ' + month + ' ' + year;
+
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -105,7 +130,20 @@ export default class Home extends React.Component {
             item
         }).then(() => {
             this.setState({ destination: null, parks: [], isSelect: false })
-            this.props.navigation.navigate('Payment')
+            Alert.alert("Tracking Selesai. Tagihan dicatat !")
+            // this.props.navigation.navigate('Payment')
+        })
+
+        const user = auth.currentUser.uid;
+        console.log(user);
+
+
+
+        db.ref(`/users/${user}/history`).push({
+            date: today,
+            name: item.name,
+            cost: item.cost,
+            type: item.type
         })
     }
 

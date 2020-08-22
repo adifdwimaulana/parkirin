@@ -5,11 +5,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import Login from './src/screens/Login';
 import Register from './src/screens/Register';
 import Splash from './src/screens/Splash';
-import Home from './src/screens/Home';
 import Route from './src/routes';
-import HomeRoute from './src/homeRoutes';
-import Payment from './src/screens/Payment';
-import SlidingPanel from 'react-native-sliding-up-down-panels';
 
 
 console.disableYellowBox = true;

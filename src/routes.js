@@ -23,9 +23,9 @@ class HomeScreen extends React.Component {
 class ProfileScreen extends React.Component {
     render() {
         return (
-            <View>
+            <ScrollView>
                 <Profile />
-            </View>
+            </ScrollView>
         )
     }
 }
